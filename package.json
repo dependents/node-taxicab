@@ -1,0 +1,35 @@
+{
+  "name": "taxicab",
+  "version": "0.0.0",
+  "description": "Find the driver script that has a given module in its dependency tree",
+  "main": "index.js",
+  "bin": {
+    "taxicab": "bin/cli.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:mrjoelkemp/node-taxicab.git"
+  },
+  "keywords": [
+    "AMD",
+    "requirejs",
+    "module",
+    "dependency",
+    "lookup"
+  ],
+  "author": "Joel Kemp <joel@mrjoelkemp.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mrjoelkemp/node-taxicab/issues"
+  },
+  "homepage": "https://github.com/mrjoelkemp/node-taxicab",
+  "dependencies": {
+    "amd-driver-scripts": "^0.1.0",
+    "dependency-tree": "^1.1.0",
+    "get-modules-to-build": "^1.0.1",
+    "q": "^1.0.1"
+  }
+}
