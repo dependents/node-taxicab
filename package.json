@@ -28,8 +28,10 @@
   "homepage": "https://github.com/mrjoelkemp/node-taxicab",
   "dependencies": {
     "amd-driver-scripts": "^0.1.0",
+    "cli-table": "^0.3.0",
     "dependency-tree": "^1.1.0",
     "get-modules-to-build": "^1.0.1",
+    "node-tictoc": "^1.1.0",
     "q": "^1.0.1"
   }
 }
