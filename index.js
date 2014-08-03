@@ -3,7 +3,6 @@ var amdDriverScripts  = require('amd-driver-scripts'),
     getTreeAsList     = require('dependency-tree').getTreeAsList,
     path              = require('path'),
     q                 = require('q'),
-    Table             = require('cli-table'),
     timer             = require('node-tictoc');
 
 /**
@@ -14,7 +13,7 @@ var amdDriverScripts  = require('amd-driver-scripts'),
  * @param {Function} options.success   - (String[]) Executed with the driver scripts that depend on the given file
  * @param {String}   [options.config]  - Path to the requirejs config (to avoid recomputing all driver scripts)
  */
-module.exports = function(options) {
+module.exports.findDriver = function(options) {
   if (!options.filename)  throw new Error('file not given');
   if (!options.root)      throw new Error('root location not given');
   if (!options.success)   throw new Error('callback not given');
@@ -31,27 +30,65 @@ module.exports = function(options) {
 };
 
 /**
- * Determines how long it takes to generate the dependency trees for each of the
- * @param  {[type]} options [description]
- * @return {[type]}         [description]
+ * Finds the driver scripts from the list that depend on the given
+ * file (at some point in the dependency tree)
+ *
+ * @param  {Object}   options
+ * @param  {String[]} options.drivers
+ * @param  {String}   options.filename
+ * @param  {String}   options.root
+ * @return {Promise}  Resolves with a list of the relevant driver scripts
  */
-function timeToGenerateTrees(options) {
-  var table = new Table({
-      head: ['Module', 'Tree time (ms)'],
-      colWidths: [50, 20]
-  });
-
-  options.profile = true;
-  options.table = table;
-
-  getTrees(options)
+function findRelatedDrivers(options) {
+  return q().then(function() {
+    return options;
+  })
+  .then(getTrees)
+  .then(function(trees) {
+    options.trees = trees;
+    return options;
+  })
   .then(function() {
-    console.log(table.toString());
+    var relatedDrivers = [];
+
+    options.trees.forEach(function(treeList, idx) {
+      if (treeList.indexOf(options.filename) !== -1) {
+        relatedDrivers.push(options.drivers[idx]);
+      }
+    });
+
+    return relatedDrivers;
   });
 }
 
 /**
- *
+ * Returns how long it takes to generate the dependency trees for each of the
+ * modules in the given root directory
+ * @param  {Object} options
+ * @param  {String} options.root    - Path where your JavaScript files exist
+ * @param  {String} options.success - Executed with {Object} containing the module name and time to tree
+ */
+module.exports.timeToGenerateTrees = function(options) {
+  options = options || {};
+
+  if (!options.root) throw new Error('root not given');
+  if (!options.success) throw new Error('success callback not given');
+
+  options.profile = true;
+  options.table = {};
+
+  getDriverScripts(options)
+  .then(function(drivers) {
+    options.drivers = drivers;
+    return options;
+  })
+  .then(getTrees)
+  .then(function() {
+    options.success(options.table);
+  });
+};
+
+/**
  * @param  {Options} options
  * @param  {Options} options.root
  * @param  {Options} options.config
@@ -93,44 +130,12 @@ function getConfigDrivers(root, configPath) {
 }
 
 /**
- * Finds the driver scripts from the list that depend on the given
- * file (at some point in the dependency tree)
- *
- * @param  {Object}   options
- * @param  {String[]} options.drivers
- * @param  {String}   options.filename
- * @param  {String}   options.root
- * @return {Promise}  Resolves with a list of the relevant driver scripts
- */
-function findRelatedDrivers(options) {
-  return q().then(function() {
-    return options;
-  })
-  .then(getTrees)
-  .then(function(trees) {
-    options.trees = trees;
-    return options;
-  })
-  .then(function() {
-    var relatedDrivers = [];
-
-    options.trees.forEach(function(treeList, idx) {
-      if (treeList.indexOf(options.filename) !== -1) {
-        relatedDrivers.push(options.drivers[idx]);
-      }
-    });
-
-    return relatedDrivers;
-  });
-}
-
-/**
  * Gets the dependency tree for each of the given files
  * @param  {Object}     options
  * @param  {String[]}   options.drivers
  * @param  {String}     options.root
  * @param  {Boolean}    options.profile - Whether or not to print profiling information
- * @param  {cli-table}  options.table   - Table instance for pretty output
+ * @param  {cli-table}  options.table   - data store for pretty output
  * @return {Promise}    (String[]) => null Resolves with a list of trees for each file in the list
  */
 function getTrees(options) {
@@ -146,7 +151,7 @@ function getTrees(options) {
 
     if (options.profile) {
       time = timer.toct();
-      options.table.push([driver.split(options.root)[1], time.ms]);
+      options.table[driver.split(options.root)[1]] = (time.seconds ? time.seconds + 's ' : '') + time.ms + 'ms';
     }
 
     return deferred.promise;
