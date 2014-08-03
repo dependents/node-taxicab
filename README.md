@@ -51,7 +51,7 @@ Prints:
 var timeToTree = require('taxicab').timeToGenerateTrees;
 
 timeToTree({
-  root:   'path/to/all/js,
+  root:   'path/to/all/js',
   success: function(profileData) {
     console.log(profileData);
   }
