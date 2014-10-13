@@ -1,70 +1,37 @@
-### TaxiCab
+### TaxiCab [![npm](http://img.shields.io/npm/v/taxicab.svg)](https://npmjs.org/package/taxicab) [![npm](http://img.shields.io/npm/dm/taxicab.svg)](https://npmjs.org/package/taxicab)
 
-> A collection of helpful utilities for AMD modules
+> Find a driver
 
 `npm install -g taxicab`
 
+Finds the driver script(s) that depend on a given module. This is helpful if you'd like to see which apps
+are affected by changes to a single module.
+
 ### Usage
 
-Supported Commands:
-
-1. [Find all driver scripts that depend on a module](#find-driver)
-2. [How long does it take to compute the dependency trees about all modules in a directory](#time-to-trees)
-
-
-##### find-driver
-
-> Find the driver script(s) that depend on the given module
-
 ```js
-var findDriver = require('taxicab').findDriver;
+var findDriver = require('taxicab');
 
 findDriver({
-  file:   'file/in/question',
-  root:   'path/to/all/js,
-  config: 'path/to/my/requirejs/config.js', // Optional
-  success: function(drivers) {
+  file: 'path/to/a/js/file',
+  directory: 'path/to/all/js,
+  success: function(err, drivers) {
     console.log(drivers);
   }
 });
 ```
 
-* If `config` is supplied, [get-modules-to-build](https://github.com/mrjoelkemp/node-get-modules-to-build) is used to look up
-the driver scripts. Otherwise, the driver scripts are computed via [amd-driver-scripts](https://github.com/mrjoelkemp/node-amd-driver-scripts).
+* You may pass additional options supported by [`get-driver-scripts`](https://github.com/mrjoelkemp/node-get-driver-scripts)
+to handle pulling driver scripts from a RequireJS build config or resolving aliased
+paths via a requirejs config.
 
 Shell usage:
 
-`find-driver filename root [config]`
+`taxicab filename directory [buildConfig]`
 
 Prints:
 
 ```
-/a.js
-/b.js
-```
-
-##### time-to-trees
-
-> Get profiling data about how long it takes to generate the dependency trees for each module in a directory
-
-```js
-var timeToTree = require('taxicab').timeToGenerateTrees;
-
-timeToTree({
-  root:   'path/to/all/js',
-  success: function(profileData) {
-    console.log(profileData);
-  }
-});
-```
-
-Shell usage:
-
-`time-to-tree root`
-
-Prints via ([columnify](https://github.com/timoxley/columnify)):
-
-```
-a.js  200ms
-b.js  100ms
+path/to/a.js
+path/to/b.js
 ```
