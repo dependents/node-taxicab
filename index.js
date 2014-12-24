@@ -1,5 +1,5 @@
 var getDriverScripts = require('get-driver-scripts');
-var getTreeAsList = require('dependency-tree').getTreeAsList;
+var getTreeAsList = require('dependency-tree');
 var path = require('path');
 var q = require('q');
 
@@ -21,16 +21,13 @@ module.exports = function(options) {
   var success = options.success;
 
   options.success = function(err, drivers) {
-    findRelatedDrivers({
+    var relatedDrivers = findRelatedDrivers({
       drivers: drivers,
       filename: options.filename,
       directory: options.directory
-    })
-    .then(function(relatedDrivers) {
-      success(null, relatedDrivers);
-    }, function(err) {
-      success(err);
     });
+
+    success(err, relatedDrivers);
   };
 
   getDriverScripts(options);
@@ -47,21 +44,20 @@ module.exports = function(options) {
  * @return {Promise}  Resolves with a list of the relevant driver scripts
  */
 function findRelatedDrivers(options) {
-  return getTrees({
+  var trees = getTrees({
     drivers: options.drivers,
     directory: options.directory
-  })
-  .then(function(trees) {
-    var relatedDrivers = [];
-
-    trees.forEach(function(treeList, idx) {
-      if (treeList.indexOf(options.filename) !== -1) {
-        relatedDrivers.push(options.drivers[idx]);
-      }
-    });
-
-    return relatedDrivers;
   });
+
+  var relatedDrivers = [];
+
+  trees.forEach(function(treeList, idx) {
+    if (treeList.indexOf(options.filename) !== -1) {
+      relatedDrivers.push(options.drivers[idx]);
+    }
+  });
+
+  return relatedDrivers;
 }
 
 /**
@@ -69,18 +65,12 @@ function findRelatedDrivers(options) {
  * @param  {Object}     options
  * @param  {String[]}   options.drivers
  * @param  {String}     options.directory
- * @return {Promise}    (String[]) => null Resolves with a list of trees for each file in the list
+ * @return {String[]}
  */
 function getTrees(options) {
   var cache = {};
 
-  return q.all(options.drivers.map(function(driver) {
-    var deferred = q.defer();
-
-    getTreeAsList(driver, options.directory, function(tree) {
-      deferred.resolve(tree);
-    }, cache);
-
-    return deferred.promise;
-  }));
+  return options.drivers.map(function(driver) {
+    return getTreeAsList(driver, options.directory, cache);
+  });
 }

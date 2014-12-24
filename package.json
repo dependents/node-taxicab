@@ -29,7 +29,7 @@
   "homepage": "https://github.com/mrjoelkemp/node-taxicab",
   "dependencies": {
     "commander": "~2.5.1",
-    "dependency-tree": "~1.3.4",
+    "dependency-tree": "~2.0.1",
     "get-driver-scripts": "~1.0.1",
     "q": "~1.0.1"
   },
