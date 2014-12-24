@@ -4,8 +4,13 @@
 
 `npm install -g taxicab`
 
-Finds the driver script(s) that depend on a given module. This is helpful if you'd like to see which apps
-are affected by changes to a single module.
+Finds the application entry points (i.e., driver scripts) that depend on a given module.
+
+### Motivation
+
+In a multi-bundle architecture (where each bundle contains an entry-point/driver-script),
+a module gets reused across several bundles. If you're changing a module, it's helpful to know
+which apps will be affected.
 
 ### Usage
 
@@ -14,7 +19,7 @@ var findDriver = require('taxicab');
 
 findDriver({
   file: 'path/to/a/js/file',
-  directory: 'path/to/all/js,
+  directory: 'path/to/all/js',
   success: function(err, drivers) {
     console.log(drivers);
   }
@@ -25,13 +30,15 @@ findDriver({
 to handle pulling driver scripts from a RequireJS build config or resolving aliased
 paths via a requirejs config.
 
-Shell usage:
+### Shell usage:
 
-`taxicab filename directory [buildConfig]`
+`taxicab --directory=path/to/my/js path/to/a/file`
+
+* See `taxicab --help` for more information.
 
 Prints:
 
 ```
-path/to/a.js
-path/to/b.js
+/path/to/a.js
+/path/to/b.js
 ```

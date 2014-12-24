@@ -16,6 +16,8 @@ module.exports = function(options) {
   if (!options.directory) { throw new Error('directory location not given'); }
   if (!options.success) { throw new Error('success callback not given'); }
 
+  options.filename = path.resolve(options.filename);
+
   var success = options.success;
 
   options.success = function(err, drivers) {
