@@ -2,17 +2,24 @@
 
 'use strict';
 
-var findDriver  = require('../').findDriver,
-    filename    = process.argv[2],
-    root        = process.argv[3],
-    config      = process.argv[4];
+var findDriver  = require('../');
+var program = require('commander');
+
+program
+  .version(require('../package.json').version)
+  .usage('[options] <filename>')
+  .option('-d, --directory <path>', 'location of JS files')
+  .option('-b, --build-config [path]', 'location of a RequireJS build config file for AMD')
+  .option('-c, --config [path]', 'location of a RequireJS config for aliased paths')
+  .parse(process.argv);
 
 try {
   findDriver({
-    filename: filename,
-    root: root || '',
-    config: config || '',
-    success: function(drivers) {
+    filename: program.args[0],
+    directory: program.directory,
+    buildConfig: program.buildConfig,
+    config: program.config,
+    success: function(err, drivers) {
       drivers.forEach(function(driver) {
         console.log(driver);
       });
