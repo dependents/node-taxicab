@@ -19,7 +19,8 @@
     "requirejs",
     "module",
     "dependency",
-    "lookup"
+    "lookup",
+    "driver scripts"
   ],
   "author": "Joel Kemp <joel@mrjoelkemp.com>",
   "license": "MIT",
@@ -28,10 +29,10 @@
   },
   "homepage": "https://github.com/mrjoelkemp/node-taxicab",
   "dependencies": {
-    "commander": "~2.5.1",
-    "dependency-tree": "~3.0.0",
-    "get-driver-scripts": "~1.0.1",
-    "q": "~1.0.1"
+    "commander": "^2.5.1",
+    "dependency-tree": "^3.0.0",
+    "get-driver-scripts": "^1.0.1",
+    "q": "^1.0.1"
   },
   "devDependencies": {
     "mocha": "~2.1.0"
