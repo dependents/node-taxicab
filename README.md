@@ -18,7 +18,7 @@ which apps will be affected.
 var findDriver = require('taxicab');
 
 findDriver({
-  file: 'path/to/a/js/file',
+  filename: 'path/to/a/js/file',
   directory: 'path/to/all/js',
   success: function(err, drivers) {
     console.log(drivers);
