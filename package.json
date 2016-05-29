@@ -30,7 +30,8 @@
   "homepage": "https://github.com/mrjoelkemp/node-taxicab",
   "dependencies": {
     "commander": "^2.5.1",
-    "dependency-tree": "^3.0.0",
+    "debug": "~2.2.0",
+    "dependency-tree": "~5.1.0",
     "get-driver-scripts": "^1.0.1",
     "q": "^1.0.1"
   },
