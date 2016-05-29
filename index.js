@@ -72,6 +72,8 @@ function findRelatedDrivers(options) {
   var relatedDrivers = [];
 
   trees.forEach(function(treeList, idx) {
+    debug('looking for ' + options.filename + ' within: \n' + treeList.join('\n'));
+
     if (treeList.indexOf(options.filename) !== -1) {
       relatedDrivers.push(options.drivers[idx]);
     }
