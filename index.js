@@ -5,6 +5,12 @@ var q = require('q');
 var debug = require('debug')('taxi');
 
 /**
+ * Used to memoize traversal of trees from all available drivers
+ * @type {Object}
+ */
+var cache = {};
+
+/**
  * Gets the driver script(s) that depend on the given module
  *
  * @param {Object}   options
@@ -29,6 +35,8 @@ module.exports = function(options) {
   var success = options.success;
 
   options.success = function(err, drivers) {
+    debug('found the following driver scripts in the codebase: \n' + drivers.join('\n'));
+
     var relatedDrivers = findRelatedDrivers({
       drivers: drivers,
       filename: options.filename,
@@ -65,7 +73,9 @@ function findRelatedDrivers(options) {
       filename: driver,
       root: options.directory,
       config: options.config,
-      webpackConfig: options.webpackConfig
+      webpackConfig: options.webpackConfig,
+      // On every call, this will be mutated with the final state of the traversal
+      visited: cache
     });
   });
 
