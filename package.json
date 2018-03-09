@@ -32,7 +32,7 @@
     "commander": "^2.15.0",
     "debug": "^3.1.0",
     "dependency-tree": "^6.0.1",
-    "get-driver-scripts": "^1.1.0",
+    "get-driver-scripts": "^2.0.0",
     "q": "^1.5.1"
   },
   "devDependencies": {
