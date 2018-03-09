@@ -1,6 +1,6 @@
 {
   "name": "taxicab",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Find the driver script that has a given module in its dependency tree",
   "main": "index.js",
   "bin": {
